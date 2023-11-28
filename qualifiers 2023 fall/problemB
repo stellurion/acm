@@ -1,0 +1,94 @@
+class Team:
+    def __init__(self, o, f) -> None:
+        self._off = o
+        self._def = f
+        self._win = 0
+    def swap(self):
+        self._off, self._def = self._def, self._off
+    def increment(self):
+        self._win += 1
+    def reset(self, next):
+        self._def = self._off
+        self._off = next
+        self._win = 0
+    def format(self):
+        return (self._off, self._def)
+    def ordered(self):
+        return tuple(sorted((self._off, self._def)))
+    def __eq__(self, other):
+        return self.ordered() == other.ordered()
+
+class Record:
+    def __init__(self) -> None:
+        self._history = dict() #team tuple, wins
+        self._time = dict()
+    def add(self, team, time):
+        self._history[team.format()] = 0   #holdest largest win streak
+        self._time[team.format()] = time
+    def update(self, temp, time): #team and temp are equal, updating new 
+        if(temp.format() in self._history):
+            if temp._win >= self._history[temp.format()]:
+                self._history[temp.format()] = temp._win
+                self._time[temp.format()] = time
+        elif(temp.ordered() in self._history): ##HELP
+            if temp._win >= self._history[temp.ordered()]: #if current streak is larger or equal
+                self._history[temp.ordered()] = temp._win
+                self._time[temp.ordered()] = time
+    def __contains__(self, team):
+        return team.format() in self._history or team.ordered() in self._history
+    def max(self): #finds the maximum legacy
+        maxv = max(self._history.values())
+        maxl = [k for k, v in self._history.items() if v == maxv]
+        return sorted(maxl, key = lambda x : self._time[x])
+
+
+def problem():
+    players = int(input()) #number of players
+    names = input().split()
+    victory = input()
+
+    history = Record()
+    white = Team(names[0], names[2])
+    black = Team(names[1], names[3])
+    names = names[4:] #takes out first 4
+
+    history.add(white, 0)
+    history.add(black, 1)
+
+    time = 2
+    for win in victory:
+        print("--------------------------------------")
+        print("White: ", white._off, white._def)
+        print("Black: ", black._off, black._def)
+
+        if white.ordered() not in history._history and white.format() not in history._history:
+            history.add(white, time)
+        if black.ordered() not in history._history and black.format() not in history._history:
+            history.add(black, time)
+
+        if win == 'W':
+            white.increment()   
+            history.update(white, time)
+
+            white.swap()
+            names.append(black._def)
+            black.reset(names[0])
+            names = names[1:]
+        else: #black win
+            black.increment()
+            history.update(black, time)
+
+
+            black.swap()
+            names.append(white._def)
+            white.reset(names[0])
+            names = names[1:]
+
+        time += 1
+        print(history._history)
+        print("--------------------------------------")
+
+    print(history.max())  
+
+
+problem()
