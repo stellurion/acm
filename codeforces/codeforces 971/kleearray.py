@@ -8,7 +8,7 @@ for case in range(cases):
     k = int(k)
 
     array = [k+x for x in range(n)]
-    total = sum(array)
+    total = sum(array) #can be done instead with the arithmetic sum
 
     min = float('inf')
     for i in range(n):
