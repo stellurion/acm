@@ -1,1 +1,1 @@
-all my competitive programming practice from ICPC, codeforces, and former competitions
+all my competitive programming practice 2022 onward from ICPC, codeforces, and etc.
